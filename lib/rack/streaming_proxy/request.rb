@@ -47,7 +47,10 @@ private
       fixed_name = key.sub(/^HTTP_/, '').gsub('_', '-')
       request[fixed_name] = value unless fixed_name.downcase == 'host'
     end
-    request['X-Forwarded-For'] = (current_request.env['X-Forwarded-For'].to_s.split(/, +/) + [current_request.env['REMOTE_ADDR']]).join(', ')
+
+    if Rack::StreamingProxy::Proxy.hidden
+      request['X-Forwarded-For'] = (current_request.env['X-Forwarded-For'].to_s.split(/, +/) + [current_request.env['REMOTE_ADDR']]).join(', ')
+    end
 
     log_headers :debug, 'Proxy Request Headers:', request
 

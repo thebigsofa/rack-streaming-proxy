@@ -7,7 +7,7 @@ require 'rack/streaming_proxy/response'
 class Rack::StreamingProxy::Proxy
 
   class << self
-    attr_accessor :logger, :log_verbosity, :num_retries_on_5xx, :raise_on_5xx
+    attr_accessor :logger, :log_verbosity, :num_retries_on_5xx, :raise_on_5xx, :hidden
 
     def set_default_configuration
       # Logs to stdout by default unless configured with another logger via Railtie.
@@ -27,6 +27,9 @@ class Rack::StreamingProxy::Proxy
       # e.g. the Apache error page. If you want an exception to be raised instead so
       # you can handle it yourself (i.e. display your own error page), set raise_on_5xx to true.
       @raise_on_5xx ||= false
+
+      # If hidden is set the proxy will not add the standard X-Forwarded-For header
+      @hidden ||= false
     end
 
     def log(level, message)
